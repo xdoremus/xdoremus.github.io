@@ -47,7 +47,6 @@
         }
 
         var tireurs = new Array()
-        // var tirage = new Array()
         var chapeau = new Array()
 
         var Xavier = {
@@ -133,6 +132,7 @@
             var index = -1
             var stack = 0;
             // tirage numéro 1
+            console.log(tireurs[i].name);
             while (tireurs[i].aTirer > 1 && stack < 500) {
                 // On tire une position au hasard dans le chapeau
                 index = randomInteger(chapeau.length);
@@ -141,7 +141,6 @@
                 if (tireurs[i].mustSpoil1 == -1 && chapeau[index] != tireurs[i].ID) {
         			tireurs[i].mustSpoil1 = tireurs[chapeau[index]].name;
             		chapeau.splice(index, 1);
-            		console.log(chapeau.length);
             		tireurs[i].aTirer--;
                 };
             }
