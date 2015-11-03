@@ -42,7 +42,6 @@
                 tableau[i].forbidId = -1;
                 tableau[i].mustSpoil1 = -1;
                 tableau[i].mustSpoil2 = -1;
-                tableau[i].aTirer = 2;
             };
         }
 
@@ -117,30 +116,32 @@
         // Tirage au sort
         for (var i = 0; i < tireurs.length; i++) {
             var index = -1
+            var tirage1 = true
+            var tirage2 = true
+
             var stack = 0;
             // tirage numéro 1
-            while (tireurs[i].aTirer > 1 && stack < 500) {
+            while (tirage1 && stack < 500) {
                 // On tire une position au hasard dans le chapeau
                 index = randomInteger(chapeau.length);
                 stack++;
-                console.log(stack);
                 // Si l'ID ne correspond ni à lui-même ni à une ID interdite
-                if ((chapeau[index] != tireurs[i].forbidId) && (chapeau[index] != tireurs[i].ID)) {
+                if ((chapeau[index] !== tireurs[i].forbidId) && (chapeau[index] !== tireurs[i].ID)) {
         			tireurs[i].mustSpoil1 = tireurs[chapeau[index]].name;
             		chapeau.splice(index, 1);
-            		tireurs[i].aTirer--;
+					tirage1 = false;
                 };
             }
 
             // tirage numéro 2
-            while (tireurs[i].aTirer > 0 && stack < 500) {
+            while (tirage2 && stack < 500) {
                 index = randomInteger(chapeau.length);
                 stack++;
-                if ((chapeau[index] != tireurs[i].forbidId) && (chapeau[index] != tireurs[i].ID)) {
-            		if (tireurs[chapeau[index]].name != tireurs[i].mustSpoil1) {
+                if ((chapeau[index] !== tireurs[i].forbidId) && (chapeau[index] !== tireurs[i].ID)) {
+            		if (tireurs[chapeau[index]].name !== tireurs[i].mustSpoil1) {
             			tireurs[i].mustSpoil2 = tireurs[chapeau[index]].name;
                     	chapeau.splice(index, 1);
-                    	tireurs[i].aTirer--;
+                    	tirage2 = false;
             		};
                 };
         	}
