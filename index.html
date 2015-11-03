@@ -1,0 +1,189 @@
+<html lang="fr">
+
+<body>
+    <p>
+        <script>
+
+        // Définition des fonctions
+
+        //Retourne un nombre entier aléatoire entre 0 et n-1
+        function randomInteger(n) {
+            var entier = Math.floor(n * Math.random())
+            return entier;
+        }
+
+        //Génère un tableau avec tous les entiers entre 0 et nombreTotal-1 entières distribuées aléatoirement
+        function generateId(nombreTotal, chapeauaremplir) {
+            var tableauGenere = new Array()
+            var tableauBase = new Array()
+            var index
+            // Remplissage du tableau de base et du chapeau
+            for (var i = 0; i < nombreTotal; i++) {
+            // [0,1,2,3,4,...,n-1]
+                tableauBase.push(i);
+                chapeauaremplir.push(i);
+                chapeauaremplir.push(i);
+            }
+            // Récupération des nombres du tableau au hasard
+            for (var i = nombreTotal; i > 0; i--) {
+            	// On choisit un index au hasard parmi les ID du tableau
+                index = randomInteger(i);
+            	// On ajoute ce nombre au tableau généré
+                tableauGenere.push(tableauBase[index]);
+                // On retire le nombre choisi du tableau de base
+                tableauBase.splice(index, 1);
+            };
+            return tableauGenere;
+        }
+
+        function attributeId(tableau, numerosId) {
+            for (var i = 0; i < tableau.length; i++) {
+                tableau[i].ID = numerosId[i];
+                tableau[i].forbidId = -1;
+                tableau[i].mustSpoil1 = -1;
+                tableau[i].mustSpoil2 = -1;
+                tableau[i].aTirer = 2;
+            };
+        }
+
+        var tireurs = new Array()
+        // var tirage = new Array()
+        var chapeau = new Array()
+
+        var Xavier = {
+            name: "Xavier"
+        }
+
+        var Audrey = {
+            name: "Audrey"
+        }
+
+        var Benoit = {
+            name: "Benoit"
+        }
+
+        var Marie = {
+            name: "Marie"
+        }
+
+        var Fred = {
+            name: "Fred"
+        }
+
+        var Vincent = {
+            name: "Vincent"
+        }
+
+        var Sandrine = {
+            name: "Sandrine"
+        }
+
+        var Emmanuel = {
+            name: "Emmanuel"
+        }
+
+        var Eugenie = {
+            name: "Eugénie"
+        }
+
+        var MarieAnnick = {
+            name: "Marie-Annick"
+        }
+
+        // Remplissage du tableau des tireurs avec les tireurs
+        tireurs.push(Xavier);
+        tireurs.push(Audrey);
+        tireurs.push(Benoit);
+        tireurs.push(Marie);
+        tireurs.push(Fred);
+        tireurs.push(Vincent);
+        tireurs.push(Sandrine);
+        tireurs.push(Emmanuel);
+        tireurs.push(Eugenie);
+        tireurs.push(MarieAnnick);
+
+        // On donne un ID à chaque tireur
+        attributeId(tireurs, generateId(tireurs.length, chapeau));
+        // tirage = tireurs;
+        // tirage = tirage.concat(tireurs);
+
+        // Remplissage des ID interdites
+        Xavier.forbidId = Audrey.ID;
+        Audrey.forbidId = Xavier.ID;
+        Marie.forbidId = Fred.ID;
+        Fred.forbidId = Marie.ID;
+        Vincent.forbidId = Sandrine.ID;
+        Sandrine.forbidId = Vincent.ID;
+        Emmanuel.forbidId = Eugenie.ID;
+        Eugenie.forbidId = Emmanuel.ID;
+
+        // Tous les tireurs ont un ID aléatoire de 0 à 9
+
+        // for (var i = 0; i < tireurs.length; i++) {
+        // 	console.log(tireurs[i].name + " " + tireurs[i].ID + " " + tireurs[i].forbidId);
+        // };
+
+        // for (var i = 0; i < chapeau.length; i++) {
+        // 	console.log(i + " " + chapeau[i]);
+        // };
+
+
+        // Tirage au sort
+        for (var i = 0; i < tireurs.length; i++) {
+            var index = -1
+            var stack = 0;
+            // tirage numéro 1
+            while (tireurs[i].aTirer > 0 && stack < 500) {
+                // On tire une position au hasard dans le chapeau
+                index = randomInteger(chapeau.length);
+                stack++;
+                // Si l'ID ne correspond ni à lui-même
+            	if (chapeau[index] !== tireurs[i].ID) {
+            		// Ni à une ID interdite
+	                if (chapeau[index] !== tireurs[i].forbidId) {   
+                		tireurs[i].mustSpoil1 = tireurs[chapeau[index]].name;
+                    	chapeau.splice(index, 1);
+                    	tireurs[i].aTirer--;
+                	};
+                };
+            }
+
+            // tirage numéro 2
+            while ((tireurs[i].aTirer > 0) && (stack < 500)) {
+                index = randomInteger(chapeau.length);
+                stack++;
+                if (chapeau[index] !== tireurs[i].forbidId) {
+                	if (chapeau[index] !== tireurs[i].ID) {
+                		if (chapeau[index] !== tireurs[i].mustSpoil1) {
+                			tireurs[i].mustSpoil2 = tireurs[chapeau[index]].name;
+                        	chapeau.splice(index, 1);
+                        	tireurs[i].aTirer--;
+                		};
+                	};
+                };
+            }
+        };
+
+        if (stack < 500) {
+            for (var i = tireurs.length - 1; i >= 0; i--) {
+
+                document.write(tireurs[i].name + " doit offrir à " + tireurs[i].mustSpoil1 + " et à " + tireurs[i].mustSpoil2 + "<br>");
+
+                // document.write('<a href="data:text/plain;charset=utf-8,' + tireurs[i].name + "%20doit%20offrir%20à%20" + tireurs[i].mustSpoil1 + "%20et%20à%20" + tireurs[i].mustSpoil2 + '" download="' + tireurs[i].name + '.txt">' + tireurs[i].name + '</a>');
+                // document.write("<br>");
+
+            };
+        } else {
+            document.write("Ça a beaucoup trop mouliné !");
+        };
+
+        // for (var i = tireurs.length - 1; i >= 0; i--) {
+        // 	console.log(tireurs[i].name + " doit offrir à " + tireurs[i].mustSpoil1 + " et à " + tireurs[i].mustSpoil2);
+        // 	document.write(tireurs[i].name + " doit offrir à " + tireurs[i].mustSpoil1 + " et à " + tireurs[i].mustSpoil2 + "<br>");
+        // };
+
+        </script>
+    </p>
+</body>
+
+</html>
