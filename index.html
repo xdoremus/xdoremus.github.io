@@ -1,5 +1,4 @@
 <html lang="fr">
-
 <body>
     <p>
         <script>
@@ -10,39 +9,6 @@
         function randomInteger(n) {
             var entier = Math.floor(n * Math.random())
             return entier;
-        }
-
-        //Génère un tableau avec tous les entiers entre 0 et nombreTotal-1 entières distribuées aléatoirement
-        function generateId(nombreTotal, chapeauaremplir) {
-            var tableauGenere = new Array()
-            var tableauBase = new Array()
-            var index
-            // Remplissage du tableau de base et du chapeau
-            for (var i = 0; i < nombreTotal; i++) {
-            // [0,1,2,3,4,...,n-1]
-                tableauBase.push(i);
-                chapeauaremplir.push(i);
-                chapeauaremplir.push(i);
-            }
-            // Récupération des nombres du tableau au hasard
-            for (var i = nombreTotal; i > 0; i--) {
-            	// On choisit un index au hasard parmi les ID du tableau
-                index = randomInteger(i);
-            	// On ajoute ce nombre au tableau généré
-                tableauGenere.push(tableauBase[index]);
-                // On retire le nombre choisi du tableau de base
-                tableauBase.splice(index, 1);
-            };
-            return tableauGenere;
-        }
-
-        function attributeId(tableau, numerosId) {
-            for (var i = 0; i < tableau.length; i++) {
-                tableau[i].ID = numerosId[i];
-                tableau[i].forbidId = -1;
-                tableau[i].mustSpoil1 = -1;
-                tableau[i].mustSpoil2 = -1;
-            };
         }
 
         var tireurs = new Array()
@@ -100,8 +66,12 @@
         tireurs.push(Eugenie);
         tireurs.push(MarieAnnick);
 
-        // On donne un ID à chaque tireur
-        attributeId(tireurs, generateId(tireurs.length, chapeau));
+        // Attribution d'un ID à chacun
+        for (var i = 0; i < tireurs.length; i++) {
+        	tireurs[i].ID = i;
+        	chapeau.push(i);
+         	chapeau.push(i);
+        };
 
         // Remplissage des ID interdites
         Xavier.forbidId = Audrey.ID;
@@ -114,35 +84,48 @@
         Eugenie.forbidId = Emmanuel.ID;
 
         // Tirage au sort
+        var stack = 0;
         for (var i = 0; i < tireurs.length; i++) {
             var index = -1
             var tirage1 = true
             var tirage2 = true
 
-            var stack = 0;
+            // var stack = 0;
             // tirage numéro 1
             while (tirage1 && stack < 500) {
                 // On tire une position au hasard dans le chapeau
                 index = randomInteger(chapeau.length);
                 stack++;
                 // Si l'ID ne correspond ni à lui-même ni à une ID interdite
-                if ((chapeau[index] !== tireurs[i].forbidId) && (chapeau[index] !== tireurs[i].ID)) {
-        			tireurs[i].mustSpoil1 = tireurs[chapeau[index]].name;
-            		chapeau.splice(index, 1);
-					tirage1 = false;
-                };
+                // console.log("tiré : " + chapeau[index] + " tireur : " + tireurs[i].ID + " interdit : " + tireurs[i].forbidId);
+                if (chapeau[index] !== tireurs[i].ID) {
+                		// console.log("deux premiers diff");
+                	if (chapeau[index] !== tireurs[i].forbidId) {
+                		// console.log("premier et dernier diff");
+        				tireurs[i].mustSpoil1 = tireurs[chapeau[index]].name;
+            			chapeau.splice(index, 1);
+						tirage1 = false;
+						console.log("success tirage 1 " + tireurs[i].name);
+                	};
+            	};
             }
 
             // tirage numéro 2
             while (tirage2 && stack < 500) {
                 index = randomInteger(chapeau.length);
                 stack++;
-                if ((chapeau[index] !== tireurs[i].forbidId) && (chapeau[index] !== tireurs[i].ID)) {
+                // console.log("tiré : " + chapeau[index] + " tireur : " + tireurs[i].ID + " interdit : " + tireurs[i].forbidId);
+                if (chapeau[index] !== tireurs[i].ID) {
+                	// console.log("deux premiers diff");
+                	if (chapeau[index] !== tireurs[i].forbidId) {
+                		// console.log("premier et dernier diff");
             		if (tireurs[chapeau[index]].name !== tireurs[i].mustSpoil1) {
             			tireurs[i].mustSpoil2 = tireurs[chapeau[index]].name;
                     	chapeau.splice(index, 1);
                     	tirage2 = false;
+                    	console.log("success tirage 2 " + tireurs[i].name);
             		};
+            	};
                 };
         	}
         };
@@ -150,20 +133,13 @@
         if (stack < 500) {
             for (var i = 0 ; i < tireurs.length; i++) {
 
-                document.write(tireurs[i].name + " doit offrir à " + tireurs[i].mustSpoil1 + " et à " + tireurs[i].mustSpoil2 + "<br>");
-
-                // document.write('<a href="data:text/plain;charset=utf-8,' + tireurs[i].name + "%20doit%20offrir%20à%20" + tireurs[i].mustSpoil1 + "%20et%20à%20" + tireurs[i].mustSpoil2 + '" download="' + tireurs[i].name + '.txt">' + tireurs[i].name + '</a>');
-                // document.write("<br>");
+                document.write('<a href="data:text/plain;charset=utf-8,' + tireurs[i].name + "%20doit%20offrir%20à%20" + tireurs[i].mustSpoil1 + "%20et%20à%20" + tireurs[i].mustSpoil2 + '" download="' + tireurs[i].name + '.txt">' + tireurs[i].name + '</a>');
+                document.write("<br>");
 
             };
         } else {
             document.write("Ça a beaucoup trop mouliné !");
         };
-
-        // for (var i = tireurs.length - 1; i >= 0; i--) {
-        // 	console.log(tireurs[i].name + " doit offrir à " + tireurs[i].mustSpoil1 + " et à " + tireurs[i].mustSpoil2);
-        // 	document.write(tireurs[i].name + " doit offrir à " + tireurs[i].mustSpoil1 + " et à " + tireurs[i].mustSpoil2 + "<br>");
-        // };
 
         </script>
     </p>
